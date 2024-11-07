@@ -14,8 +14,15 @@ Entity Memory_4096 is
 end entity;
 
 architecture Memory_4096_behave of Memory_4096 is
-type MTD is array(4095 downto 0) of std_logic_vector(15 downto 0);
-signal data : MTD ;
+type MTD is array(0 to 4095) of std_logic_vector(15 downto 0);
+signal data : MTD:=(
+0      => "0010111111111111",
+1      => "0001111111111110",
+2      => "1111010000000000",
+3      => "0111000000000001",
+4094   => "0000000000000101",
+4095   => "0000000000000011",
+Others => "0000000000000000" );
 begin
 process(clk)
    begin
@@ -769,7 +776,7 @@ Use ieee.std_logic_1164.all;
 Use ieee.std_logic_Unsigned.all;
 Entity Mano_Machine is
    Port(
-         St      :  inout   std_logic                      ;
+         St      :  in      std_logic                      ;
          clk     :  in      std_logic                      ;
          Inuser  :  in      std_logic_vector( 7 downto 0 ) ;
          Output  :  out     Std_logic_vector( 7 downto 0 ) 
@@ -1079,3 +1086,31 @@ DF4 : FGO         port map(FGOout,FGOin,clk);
 DF5 : IEN         port map(IENo,IENin,clk);
 DF6 : S           port map(st,So,STA_ST,clk);
 End Architecture;
+
+--TB 
+Library Ieee;
+Use Ieee.Std_Logic_1164.all;
+Entity TB_Mano_Machine is
+End Entity;
+Architecture TB_Mano_Machine_Behave Of TB_Mano_Machine is
+component  Mano_Machine is
+   Port(
+         St      :  in      std_logic                      ;
+         clk     :  in      std_logic                      ;
+         Inuser  :  in      std_logic_vector( 7 downto 0 ) ;
+         Output  :  out     Std_logic_vector( 7 downto 0 ) 
+        );
+End Component;
+Signal Clk     : Std_Logic:='1' ;
+Signal St      : std_logic:='1' ;
+Signal Inuser  : std_logic_vector( 7 downto 0 ) ;
+Signal Output  : Std_logic_vector( 7 downto 0 ) ;
+Begin
+Process
+ Begin
+     Clk <= Not Clk ;
+     Wait For 5 ns;
+ End Process;
+QQQQW : Mano_Machine Port Map ( St,Clk,Inuser,Output);
+End;
+        
